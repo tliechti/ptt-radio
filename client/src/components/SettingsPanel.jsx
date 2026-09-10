@@ -1,24 +1,26 @@
 import { useState, useCallback } from "react";
 import { useKeyCapture } from "../hooks/useKeyBind.js";
+import { THEME } from "../theme.js";
 
 const inputStyle = {
-  background: "#060e06",
-  border: "1px solid #1a2e1a",
-  borderRadius: 4,
-  color: "#86efac",
+  background: "#f8fafc",
+  border: `1px solid ${THEME.border.default}`,
+  borderRadius: 6,
+  color: THEME.text.primary,
   fontFamily: "'IBM Plex Mono', monospace",
   fontSize: 12,
-  padding: "7px 10px",
+  fontWeight: 600,
+  padding: "8px 10px",
   outline: "none",
   width: "100%",
 };
 
 const labelStyle = {
   fontFamily: "'IBM Plex Mono', monospace",
-  fontSize: 10,
-  color: "#4ade80",
+  fontSize: 11,
+  fontWeight: 700,
+  color: THEME.text.secondary,
   letterSpacing: 1,
-  opacity: 0.7,
   display: "block",
   marginBottom: 5,
 };
@@ -58,26 +60,27 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
     <div style={{
       position: "absolute",
       inset: 0,
-      background: "rgba(2,9,2,0.95)",
-      backdropFilter: "blur(10px)",
+      background: "rgba(255, 255, 255, 0.98)",
+      backdropFilter: "blur(12px)",
       borderRadius: 14,
       padding: 22,
       zIndex: 20,
       overflowY: "auto",
       display: "flex",
       flexDirection: "column",
+      boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
     }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#86efac", letterSpacing: 3 }}>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, fontWeight: 700, color: THEME.text.primary, letterSpacing: 2 }}>
           CONFIGURATION
         </span>
         <button
           onClick={onClose}
           style={{
-            background: "none", border: "1px solid rgba(255,255,255,0.12)",
-            color: "#8a9e8a", cursor: "pointer", borderRadius: 4,
-            padding: "4px 10px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10,
+            background: THEME.bg.surfaceSubtle, border: `1px solid ${THEME.border.default}`,
+            color: THEME.text.primary, cursor: "pointer", borderRadius: 4,
+            padding: "4px 10px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 600,
           }}
         >
           ESC / CLOSE
@@ -86,7 +89,7 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
 
       {/* Network */}
       <div style={{ marginBottom: 6 }}>
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.4, letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.dim, letterSpacing: 2, marginBottom: 10 }}>
           ── NETWORK ──────────────────────────────
         </div>
         <Field label="SIGNALING SERVER">
@@ -98,7 +101,7 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
             placeholder="wss://signal.your-domain.com"
             spellCheck={false}
           />
-          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#1a3a1a", marginTop: 4 }}>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: THEME.text.dim, marginTop: 4 }}>
             Leave blank to use demo mode (local PTT only)
           </div>
         </Field>
@@ -116,7 +119,7 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
 
       {/* Audio */}
       <div style={{ marginBottom: 6 }}>
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.4, letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.dim, letterSpacing: 2, marginBottom: 10 }}>
           ── AUDIO ────────────────────────────────
         </div>
         <Field label="INPUT DEVICE">
@@ -130,16 +133,16 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
           </select>
         </Field>
         <Field label={`INPUT GAIN: ${Math.round(settings.inputGain * 100)}%`}>
-          <input type="range" min="0" max="3" step="0.05" value={settings.inputGain} onChange={set("inputGain")} style={{ accentColor: "#22c55e" }} />
+          <input type="range" min="0" max="3" step="0.05" value={settings.inputGain} onChange={set("inputGain")} style={{ accentColor: THEME.accent.green }} />
         </Field>
         <Field label={`OUTPUT GAIN: ${Math.round(settings.outputGain * 100)}%`}>
-          <input type="range" min="0" max="2" step="0.05" value={settings.outputGain} onChange={set("outputGain")} style={{ accentColor: "#22c55e" }} />
+          <input type="range" min="0" max="2" step="0.05" value={settings.outputGain} onChange={set("outputGain")} style={{ accentColor: THEME.accent.green }} />
         </Field>
       </div>
 
       {/* Controls */}
       <div style={{ marginBottom: 6 }}>
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.4, letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.dim, letterSpacing: 2, marginBottom: 10 }}>
           ── CONTROLS ─────────────────────────────
         </div>
         <Field label="PTT HOTKEY">
@@ -153,11 +156,11 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
             <button
               onClick={handleCaptureKey}
               style={{
-                background: capturingKey ? "#0a2a0a" : "#060e06",
-                border: `1px solid ${capturingKey ? "#22c55e" : "#1a2e1a"}`,
-                color: capturingKey ? "#22c55e" : "#4ade80",
+                background: capturingKey ? THEME.bg.buttonReady : THEME.bg.surfaceSubtle,
+                border: `1px solid ${capturingKey ? THEME.border.bright : THEME.border.default}`,
+                color: capturingKey ? THEME.text.secondary : THEME.text.primary,
                 cursor: "pointer", borderRadius: 4,
-                padding: "7px 12px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10,
+                padding: "7px 12px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 600,
                 whiteSpace: "nowrap",
               }}
             >
@@ -166,7 +169,7 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
           </div>
         </Field>
         <Field label={`CHANNEL: ${settings.channel || 1}`}>
-          <input type="range" min="1" max="99" step="1" value={settings.channel || 1} onChange={set("channel")} style={{ accentColor: "#22c55e" }} />
+          <input type="range" min="1" max="99" step="1" value={settings.channel || 1} onChange={set("channel")} style={{ accentColor: THEME.accent.green }} />
         </Field>
       </div>
 
@@ -174,11 +177,16 @@ export function SettingsPanel({ settings, onChange, devices, onClose }) {
         onClick={onClose}
         style={{
           marginTop: "auto",
-          paddingTop: 16,
-          background: "#0a1a0a", border: "1px solid #22c55e",
-          color: "#22c55e", cursor: "pointer", borderRadius: 6,
-          padding: "10px", fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: 11, letterSpacing: 1,
+          background: THEME.bg.buttonReady,
+          border: `1px solid ${THEME.border.bright}`,
+          color: THEME.text.secondary,
+          cursor: "pointer",
+          borderRadius: 6,
+          padding: "10px",
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: 1,
         }}
       >
         SAVE &amp; CLOSE

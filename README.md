@@ -8,12 +8,12 @@
 <!-- ── License ───────────────────────────────────────────────────────────── -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](LICENSE)
 
-<!-- ── Stack ────────────────────────────────────────────────────────────── -->
+<!-- ── Stack ─────────────────────────────────────────────────────────────── -->
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-22c55e?style=flat-square&logo=node.js&logoColor=22c55e&labelColor=070e07)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-22c55e?style=flat-square&logo=react&logoColor=22c55e&labelColor=070e07)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-5-22c55e?style=flat-square&logo=vite&logoColor=22c55e&labelColor=070e07)](https://vitejs.dev)
 
-<!-- ── Protocol ─────────────────────────────────────────────────────────── -->
+<!-- ── Protocol ──────────────────────────────────────────────────────────── -->
 [![WebRTC](https://img.shields.io/badge/WebRTC-P2P-22c55e?style=flat-square&logo=webrtc&logoColor=22c55e&labelColor=070e07)](https://webrtc.org)
 [![Codec](https://img.shields.io/badge/Codec-Opus_48kHz-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](https://opus-codec.org)
 [![Encrypted](https://img.shields.io/badge/Encrypted-SRTP-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](https://datatracker.ietf.org/doc/html/rfc3711)
@@ -22,7 +22,7 @@
 [![Transport](https://img.shields.io/badge/Transport-WebSocket_%2B_UDP-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 [![Docker](https://img.shields.io/badge/Docker-ready-22c55e?style=flat-square&logo=docker&logoColor=22c55e&labelColor=070e07)](docker-compose.yml)
 
-<!-- ── Quality ────────────────────────────────────────────────────────────── -->
+<!-- ── Quality ───────────────────────────────────────────────────────────── -->
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](CONTRIBUTING.md)
 [![Open Source](https://img.shields.io/badge/Open_Source-%E2%9C%93-22c55e?style=flat-square&labelColor=070e07&color=22c55e)](https://opensource.org)
 
@@ -37,7 +37,7 @@ Hold a button (or keyboard hotkey) to speak. Release to send. Anyone in the same
   ┌───────── Machine A ──────────┐      ┌───────── Machine B ──────────┐
   │  Browser  →  PTT-Radio UI    │      │    PTT-Radio UI  ←  Browser  │
   │  [HOLD PTT]  Opus 48kHz      │      │     Opus 48kHz  [PLAYS AUDIO]│
-  └──────────┬───────────────────┘      └───────────────┬──────────────┘
+  └──────────┬───────────────────┘      └──────────────────────────┬───┘
              │   WebRTC P2P (SRTP/UDP)                  │
              └──────────────────────────────────────────┘
                            ↕ signaling only ↕
@@ -54,6 +54,7 @@ Hold a button (or keyboard hotkey) to speak. Release to send. Anyone in the same
 - **True half-duplex PTT** — hold to transmit, release to end packet
 - **WebRTC mesh** — encrypted peer-to-peer audio (SRTP), no audio touches the server
 - **Opus codec** — 48 kHz, 20 ms frames, native to all modern browsers, zero WASM
+- **High-contrast Sunlight Mode** — optimized layout & colors for outdoor visibility
 - **Live VU meter** — 24-segment LED-style input level display
 - **Oscilloscope waveform ring** — real-time canvas visualization during TX
 - **Multi-peer rooms** — up to 8 peers per channel, unlimited channels
@@ -61,6 +62,7 @@ Hold a button (or keyboard hotkey) to speak. Release to send. Anyone in the same
 - **Demo mode** — works fully offline, no signaling server needed for local testing
 - **Rebindable hotkey** — any key, captured live via one-shot listener
 - **Persisted settings** — localStorage: server URL, room, hotkey, gain, channel
+- **Android Support** — Capacitor-wrapped native Android APK
 - **Docker-ready** — multi-stage builds for both client (Nginx) and server (Node)
 - **PWA manifest** — installable as a desktop/mobile web app
 
@@ -77,14 +79,17 @@ ptt-radio/
 ├── client/                    ← React + Vite frontend
 │   ├── package.json
 │   ├── vite.config.js
+│   ├── capacitor.config.json  ← Capacitor native app config
 │   ├── index.html             ← HTML entry point
 │   ├── Dockerfile             ← multi-stage: build → Nginx
 │   ├── nginx.conf             ← SPA routing, security headers, gzip
-│   └── public/
-│       └── manifest.json      ← PWA manifest
+│   ├── android/               ← Native Android project (Gradle wrapper)
+│   ├── public/
+│   │   └── manifest.json      ← PWA manifest
 │   └── src/
 │       ├── main.jsx           ← React root mount
 │       ├── App.jsx            ← root component
+│       ├── theme.js           ← centralized sunlight color palette & theme tokens
 │       │
 │       ├── engine/
 │       │   └── PTTEngine.js   ← WebAudio + WebRTC + signaling core class
@@ -150,6 +155,114 @@ This starts:
 5. **Hold SPACE** (or your custom key) in one tab → the other tab plays audio
 
 > **Demo mode:** If no signaling server is reachable, the app falls back to demo mode automatically. Mic and PTT still work for local level/waveform testing.
+
+---
+
+## Building the Android App
+
+PTT-Radio includes an Android project powered by [Capacitor](https://capacitorjs.com/).
+
+### Prerequisites
+
+- **Java Development Kit (JDK 17 or 21)**
+- **Android SDK / Android Studio** (command-line tools or full IDE)
+- `ANDROID_HOME` or `ANDROID_SDK_ROOT` configured in your environment
+
+### 1 — Build Frontend & Sync Assets
+
+Always build the latest web frontend and synchronize it to the native Android directory:
+
+```bash
+cd client
+npm run build
+npx cap sync android
+```
+
+### 2 — Compile the Android APK (CLI)
+
+Navigate to the Android folder and compile with the Gradle wrapper:
+
+```bash
+cd client/android
+
+# Build Debug APK
+./gradlew assembleDebug
+
+# Build Release APK
+./gradlew assembleRelease
+
+# Build Android App Bundle (.aab) for Google Play
+./gradlew bundleRelease
+```
+
+> **Windows Users:** Use `gradlew.bat assembleDebug` instead of `./gradlew`.
+
+#### Output Artifacts:
+- **Debug APK:** `client/android/app/build/outputs/apk/debug/app-debug.apk`
+- **Release APK:** `client/android/app/build/outputs/apk/release/app-release-unsigned.apk`
+
+### 3 — Run & Install on Device
+
+#### Via Command Line (ADB):
+With an Android phone connected via USB (USB Debugging enabled) or an active emulator:
+
+```bash
+cd client/android
+./gradlew installDebug
+```
+or:
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+#### Via Android Studio:
+Open the native project directly in Android Studio:
+
+```bash
+cd client
+npx cap open android
+```
+- Click **Build** > **Build Bundle(s) / APK(s)** > **Build APK(s)**, or
+- Press the green **Run (▶)** button to launch on your device/emulator.
+
+---
+
+## Troubleshooting & Common Issues
+
+### `ERR_CONNECTION_REFUSED`
+
+If you encounter `ERR_CONNECTION_REFUSED`, check the following based on how you are running the app:
+
+#### 1. Signaling server or dev server is not running
+Start the servers from the project root:
+```bash
+npm run dev
+```
+Or start only the signaling server:
+```bash
+npm run start:server
+```
+
+#### 2. Running on an Android Phone (USB / Wi-Fi)
+On an Android device, `localhost` refers to the **phone itself**, not your development computer.
+
+- **Option A (USB Connected):** Forward port 3001 from your device to your host machine:
+  ```bash
+  adb reverse tcp:3001 tcp:3001
+  ```
+- **Option B (Wi-Fi):** In the app, tap **CFG** and set **Signaling Server** to your machine's LAN IP:
+  ```text
+  ws://192.168.1.xxx:3001
+  ```
+
+#### 3. Running on the Android Emulator
+Set the **Signaling Server** in the **CFG** panel to the Android emulator host loopback address:
+```text
+ws://10.0.2.2:3001
+```
+
+#### 4. Offline / Demo Mode
+If you don't want to run a signaling server, tap **CFG** and leave the **Signaling Server** input blank. The app will operate in local Demo Mode.
 
 ---
 

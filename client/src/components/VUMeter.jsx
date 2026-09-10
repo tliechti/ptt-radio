@@ -1,4 +1,6 @@
-// VUMeter — 24-segment LED-style level display
+import { THEME } from "../theme.js";
+
+// VUMeter — 24-segment LED-style level display, optimized for sunlight legibility
 export function VUMeter({ db, transmitting }) {
   const clamped = Math.max(-60, Math.min(0, db));
   const pct     = (clamped + 60) / 60;
@@ -11,9 +13,9 @@ export function VUMeter({ db, transmitting }) {
         const active = i < lit;
         const zone   = i >= 21 ? "red" : i >= 17 ? "amber" : "green";
         const palette = {
-          green: { on: "#22c55e", off: "#052e16" },
-          amber: { on: "#f59e0b", off: "#2d1b00" },
-          red:   { on: "#ef4444", off: "#2d0000" },
+          green: { on: THEME.accent.green, off: "#e2e8f0" },
+          amber: { on: THEME.accent.amber, off: "#fef3c7" },
+          red:   { on: THEME.accent.red,   off: "#fee2e2" },
         };
         const color = palette[zone][active ? "on" : "off"];
         return (

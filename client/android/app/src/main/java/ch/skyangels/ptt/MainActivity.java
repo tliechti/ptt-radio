@@ -12,8 +12,8 @@ public class MainActivity extends BridgeActivity {
         KeyEvent eventToProcess = event;
         boolean isPTT = false;
 
-        // Remap scan code 115 (often Volume Up on PTT devices) to Space
-        if (event.getScanCode() == 115) {
+        // Remap scan code 115 (Volume Up on PTT devices) or KEYCODE_PTT / KEYCODE_HEADSETHOOK to Space
+        if (event.getScanCode() == 115 || event.getKeyCode() == 269 || event.getKeyCode() == 284) {
             isPTT = true;
             eventToProcess = new KeyEvent(
                     event.getDownTime(),
@@ -23,30 +23,28 @@ public class MainActivity extends BridgeActivity {
                     event.getRepeatCount(),
                     event.getMetaState(),
                     event.getDeviceId(),
-                    57, // Remap scan code to 57 (Space) to ensure 'code' is "Space" in JS
+                    57, // Remap scan code to 57 (Space)
                     event.getFlags(),
                     event.getSource()
             );
         }
 
-        // Only trigger our custom logic on the initial KEY_DOWN (ignore repeat events)
-        if (eventToProcess.getAction() == KeyEvent.ACTION_DOWN && eventToProcess.getRepeatCount() == 0) {
-            String info = "action=" + eventToProcess.getAction() + ", keyCode=" + eventToProcess.getKeyCode() + ", scanCode=" + eventToProcess.getScanCode();
+        // Dispatch androidKeyEvent for both DOWN (0) and UP (1)
+        int action = eventToProcess.getAction();
+        if ((action == KeyEvent.ACTION_DOWN && eventToProcess.getRepeatCount() == 0) || action == KeyEvent.ACTION_UP) {
+            String info = "action=" + action + ", keyCode=" + eventToProcess.getKeyCode() + ", scanCode=" + eventToProcess.getScanCode();
             Log.d("REMOTE", "PTT Event: " + info);
-            
-            Toast.makeText(this, "Key Event: " + info, Toast.LENGTH_SHORT).show();
 
             if (bridge != null && bridge.getWebView() != null) {
                 String js = String.format(
                         "window.dispatchEvent(new CustomEvent('androidKeyEvent', { detail: { action: %d, keyCode: %d, scanCode: %d } }));",
-                        eventToProcess.getAction(), eventToProcess.getKeyCode(), eventToProcess.getScanCode()
+                        action, eventToProcess.getKeyCode(), eventToProcess.getScanCode()
                 );
                 bridge.getWebView().evaluateJavascript(js, null);
             }
         }
 
-        // For PTT, we must pass both DOWN and UP to the WebView for standard JS events,
-        // but we return true to prevent system volume changes.
+        // For PTT, forward KeyEvent to WebView and suppress system volume changes
         if (isPTT) {
             if (bridge != null && bridge.getWebView() != null) {
                 bridge.getWebView().dispatchKeyEvent(eventToProcess);

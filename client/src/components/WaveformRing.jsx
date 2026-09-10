@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { THEME } from "../theme.js";
 
 // WaveformRing — oscilloscope-style radial waveform canvas
 export function WaveformRing({ analyserRef, transmitting, size = 88 }) {
@@ -22,8 +23,8 @@ export function WaveformRing({ analyserRef, transmitting, size = 88 }) {
         // Idle ring
         ctx.beginPath();
         ctx.arc(R, R, R - 8, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(34,197,94,0.12)";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(22, 163, 74, 0.35)";
+        ctx.lineWidth = 1.5;
         ctx.stroke();
         return;
       }
@@ -46,10 +47,10 @@ export function WaveformRing({ analyserRef, transmitting, size = 88 }) {
       }
       ctx.closePath();
 
-      ctx.strokeStyle = "#22c55e";
-      ctx.lineWidth   = 1.5;
-      ctx.shadowColor = "#22c55e";
-      ctx.shadowBlur  = 5;
+      ctx.strokeStyle = THEME.accent.green;
+      ctx.lineWidth   = 2;
+      ctx.shadowColor = THEME.accent.green;
+      ctx.shadowBlur  = 4;
       ctx.stroke();
 
       ctx.shadowBlur = 0;

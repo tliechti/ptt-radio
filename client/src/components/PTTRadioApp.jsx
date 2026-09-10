@@ -12,32 +12,34 @@ import {
   PeerBadge,
   SquelchIndicator,
 } from "./DisplayComponents.jsx";
+import { THEME } from "../theme.js";
 
 // ─── Global keyframe animations injected once ─────────────────────────────────
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Rajdhani:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body, #root {
     min-height: 100vh;
-    background: linear-gradient(160deg, #020902 0%, #060e06 100%);
+    background: ${THEME.bg.app};
+    color: ${THEME.text.primary};
     -webkit-font-smoothing: antialiased;
   }
   @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0   rgba(34,197,94,0.4); }
-    70%  { box-shadow: 0 0 0 18px rgba(34,197,94,0); }
-    100% { box-shadow: 0 0 0 0   rgba(34,197,94,0); }
+    0%   { box-shadow: 0 0 0 0   rgba(22,163,74,0.4); }
+    70%  { box-shadow: 0 0 0 18px rgba(22,163,74,0); }
+    100% { box-shadow: 0 0 0 0   rgba(22,163,74,0); }
   }
   @keyframes tx-flash {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.55; }
   }
-  button:focus-visible { outline: 2px solid rgba(34,197,94,0.5); outline-offset: 2px; }
+  button:focus-visible { outline: 2px solid ${THEME.accent.green}; outline-offset: 2px; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1a2e1a; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: ${THEME.border.default}; border-radius: 2px; }
 `;
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ──────────────────────────────────────────────────────────
 export default function PTTRadioApp() {
   const {
     appState, sigState, transmitting, levelDb,
@@ -100,26 +102,20 @@ export default function PTTRadioApp() {
         padding: 12,
         fontFamily: "'Rajdhani', sans-serif",
       }}>
-        {/* ── Radio body ─────────────────────────────────────────────────── */}
+        {/* ── Radio body ───────────────────────────────────────────────── */}
         <main
           aria-label="PTT-Radio"
           style={{
             width: "100%",
             maxWidth: 500,
-            background: "#090e09",
-            border: "1px solid #1a2e1a",
+            background: THEME.bg.radio,
+            border: `1px solid ${THEME.border.default}`,
             borderRadius: 14,
             overflow: "hidden",
             position: "relative",
-            boxShadow: "0 0 80px rgba(34,197,94,0.03), 0 32px 64px rgba(0,0,0,0.8)",
+            boxShadow: THEME.shadow.radio,
           }}
         >
-          {/* CRT scanline overlay */}
-          <div aria-hidden="true" style={{
-            position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1, borderRadius: 14,
-            background: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.055) 2px,rgba(0,0,0,0.055) 4px)",
-          }} />
-
           {/* Settings panel (overlay) */}
           {showSettings && (
             <SettingsPanel
@@ -130,11 +126,11 @@ export default function PTTRadioApp() {
             />
           )}
 
-          {/* ── Header ─────────────────────────────────────────────────────── */}
+          {/* ── Header ──────────────────────────────────────────────────── */}
           <header style={{
-            background: "#050c05",
-            borderBottom: "1px solid #132013",
-            padding: "11px 18px",
+            background: THEME.bg.header,
+            borderBottom: `1px solid ${THEME.border.subtle}`,
+            padding: "12px 18px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -144,22 +140,22 @@ export default function PTTRadioApp() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               {/* Radio icon */}
               <div style={{
-                width: 30, height: 30, background: "#060e06",
-                border: "1px solid #1a2e1a", borderRadius: 6,
+                width: 32, height: 32, background: THEME.bg.surfaceSubtle,
+                border: `1px solid ${THEME.border.default}`, borderRadius: 6,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                  <path d="M3 7h12v8H3V7z" stroke="#22c55e" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="6.5" cy="11" r="1.5" stroke="#22c55e" strokeWidth="1"/>
-                  <path d="M10 9.5h3M10 11h3M10 12.5h2" stroke="#22c55e" strokeWidth="1" strokeLinecap="round"/>
-                  <path d="M6 5l2-2M9 4.5V2M12 5l-2-2" stroke="#22c55e" strokeWidth="1" strokeLinecap="round"/>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M3 7h12v8H3V7z" stroke={THEME.accent.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="6.5" cy="11" r="1.5" stroke={THEME.accent.green} strokeWidth="1.5"/>
+                  <path d="M10 9.5h3M10 11h3M10 12.5h2" stroke={THEME.accent.green} strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M6 5l2-2M9 4.5V2M12 5l-2-2" stroke={THEME.accent.green} strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#86efac", fontWeight: 600, letterSpacing: 3 }}>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: THEME.text.primary, fontWeight: 700, letterSpacing: 2 }}>
                   PTT-RADIO
                 </div>
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.4, letterSpacing: 1 }}>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: THEME.text.muted, fontWeight: 500, letterSpacing: 1 }}>
                   v1.0.0 · {peerId}
                 </div>
               </div>
@@ -171,11 +167,11 @@ export default function PTTRadioApp() {
               <div
                 aria-label={transmitting ? "Transmitting" : sigState}
                 style={{
-                  width: 8, height: 8, borderRadius: "50%",
-                  background: transmitting ? "#ef4444" : isConnected ? "#22c55e" : "#1a2e1a",
+                  width: 9, height: 9, borderRadius: "50%",
+                  background: transmitting ? THEME.accent.red : isConnected ? THEME.accent.green : THEME.border.default,
                   boxShadow: transmitting
-                    ? "0 0 8px rgba(239,68,68,0.6)"
-                    : isConnected ? "0 0 6px rgba(34,197,94,0.4)" : "none",
+                    ? "0 0 8px rgba(220,38,38,0.6)"
+                    : isConnected ? "0 0 6px rgba(22,163,74,0.4)" : "none",
                   animation: transmitting ? "tx-flash 0.5s ease infinite" : "none",
                   transition: "background 0.3s",
                 }}
@@ -184,10 +180,10 @@ export default function PTTRadioApp() {
                 onClick={() => setShowSettings(true)}
                 aria-label="Open settings"
                 style={{
-                  background: "none",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "#4ade80", cursor: "pointer", borderRadius: 4,
-                  padding: "3px 8px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10,
+                  background: THEME.bg.surfaceSubtle,
+                  border: `1px solid ${THEME.border.default}`,
+                  color: THEME.text.primary, cursor: "pointer", borderRadius: 4,
+                  padding: "4px 9px", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 600,
                 }}
               >
                 CFG
@@ -195,7 +191,7 @@ export default function PTTRadioApp() {
             </div>
           </header>
 
-          {/* ── Body ─────────────────────────────────────────────────────────── */}
+          {/* ── Body ────────────────────────────────────────────────────── */}
           <div style={{ padding: 18, display: "flex", flexDirection: "column", gap: 14, position: "relative", zIndex: 2 }}>
 
             {/* LCD + waveform row */}
@@ -209,27 +205,27 @@ export default function PTTRadioApp() {
               />
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                 <WaveformRing analyserRef={analyserRef} transmitting={transmitting} size={82} />
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.35 }}>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600, color: THEME.text.muted }}>
                   {levelDb > -120 ? `${Math.round(levelDb)} dBFS` : "-- dBFS"}
                 </div>
               </div>
             </div>
 
             {/* VU meter panel */}
-            <div style={{ background: "#050c05", border: "1px solid #132013", borderRadius: 6, padding: "10px 13px" }}>
+            <div style={{ background: THEME.bg.surface, border: `1px solid ${THEME.border.subtle}`, borderRadius: 8, padding: "10px 14px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
-                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.45, letterSpacing: 1 }}>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.secondary, letterSpacing: 1 }}>
                   INPUT LEVEL
                 </span>
                 <SquelchIndicator active={transmitting} />
-                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.45, letterSpacing: 1 }}>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.secondary, letterSpacing: 1 }}>
                   AUDIO
                 </span>
               </div>
               <VUMeter db={levelDb} transmitting={transmitting} />
               <div style={{
                 display: "flex", justifyContent: "space-between", marginTop: 4,
-                fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#1a2e1a",
+                fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600, color: THEME.text.dim,
               }}>
                 {["-60", "-40", "-20", "-12", "-6", "0"].map((v) => <span key={v}>{v}</span>)}
               </div>
@@ -241,12 +237,12 @@ export default function PTTRadioApp() {
                 onClick={() => initAudio(settings.inputDevice)}
                 disabled={isReady}
                 style={{
-                  flex: 1, borderRadius: 6, padding: "9px 8px",
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: 1,
+                  flex: 1, borderRadius: 6, padding: "10px 8px",
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1,
                   cursor: isReady ? "default" : "pointer",
-                  background: isReady ? "#0a1a0a" : "#090e09",
-                  border: `1px solid ${isReady ? "#22c55e" : "#1a2e1a"}`,
-                  color: isReady ? "#22c55e" : "#4ade80",
+                  background: isReady ? THEME.bg.buttonReady : THEME.bg.buttonIdle,
+                  border: `1px solid ${isReady ? THEME.border.bright : THEME.border.default}`,
+                  color: isReady ? THEME.text.secondary : THEME.text.primary,
                   opacity: isReady ? 1 : 0.9,
                   transition: "all 0.2s",
                 }}
@@ -258,13 +254,13 @@ export default function PTTRadioApp() {
                 onClick={handleConnect}
                 disabled={!isReady}
                 style={{
-                  flex: 1, borderRadius: 6, padding: "9px 8px",
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: 1,
+                  flex: 1, borderRadius: 6, padding: "10px 8px",
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1,
                   cursor: isReady ? "pointer" : "not-allowed",
-                  background: isConnected ? "#0a1a07" : "#090e09",
-                  border: `1px solid ${isConnected ? "#22c55e" : "#1a2e1a"}`,
-                  color: isConnected ? "#22c55e" : "#4ade80",
-                  opacity: isReady ? 1 : 0.35,
+                  background: isConnected ? THEME.bg.buttonConnected : THEME.bg.buttonIdle,
+                  border: `1px solid ${isConnected ? THEME.border.bright : THEME.border.default}`,
+                  color: isConnected ? THEME.text.secondary : THEME.text.primary,
+                  opacity: isReady ? 1 : 0.45,
                   transition: "all 0.2s",
                 }}
               >
@@ -282,10 +278,10 @@ export default function PTTRadioApp() {
             />
 
             {/* Peers panel */}
-            <div style={{ background: "#050c05", border: "1px solid #132013", borderRadius: 6, padding: "10px 12px" }}>
+            <div style={{ background: THEME.bg.surface, border: `1px solid ${THEME.border.subtle}`, borderRadius: 8, padding: "10px 14px" }}>
               <div style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8,
-                fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#4ade80", opacity: 0.45, letterSpacing: 1,
+                fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: THEME.text.secondary, letterSpacing: 1,
               }}>
                 <span>CONNECTED PEERS</span>
                 <span>{peers.length}/8</span>
@@ -293,7 +289,7 @@ export default function PTTRadioApp() {
 
               {peers.length === 0 ? (
                 <div style={{
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#1a2e1a",
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 600, color: THEME.text.dim,
                   textAlign: "center", padding: "7px 0",
                 }}>
                   {isConnected ? "WAITING FOR PEERS..." : "NOT CONNECTED"}
@@ -313,17 +309,18 @@ export default function PTTRadioApp() {
             {/* Footer */}
             <div style={{
               display: "flex", justifyContent: "space-between", alignItems: "center",
-              borderTop: "1px solid #0c140c", paddingTop: 11,
+              borderTop: `1px solid ${THEME.border.divider}`, paddingTop: 11,
             }}>
-              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "#1a2e1a", letterSpacing: 1 }}>
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600, color: THEME.text.dim, letterSpacing: 1 }}>
                 WebRTC · Opus · SRTP
               </span>
               <div style={{ display: "flex", gap: 5 }}>
                 {[["OPUS", "CODEC"], ["48kHz", "RATE"], ["20ms", "FRAME"]].map(([val, lbl]) => (
                   <div key={lbl} style={{
-                    fontFamily: "'IBM Plex Mono', monospace", fontSize: 9,
-                    color: "#1a2e1a", padding: "2px 6px",
-                    border: "1px solid #0c140c", borderRadius: 3,
+                    fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600,
+                    color: THEME.text.dim, padding: "2px 6px",
+                    background: THEME.bg.surfaceSubtle,
+                    border: `1px solid ${THEME.border.subtle}`, borderRadius: 4,
                   }}>
                     {val}
                   </div>
