@@ -118,6 +118,19 @@ export function usePTTEngine() {
     const engine = new PTTEngine(handleEvent);
     engineRef.current = engine;
 
+    // Listen for custom Android key events forwarded from native side
+    const onAndroidKey = (e) => {
+      handleEvent({ type: "nativeKey", ...e.detail });
+    };
+    window.addEventListener("androidKeyEvent", onAndroidKey);
+
+    // Also log standard web key events for comparison
+    const onWebKey = (e) => {
+      if (e.repeat) return;
+      handleEvent({ type: "webKey", code: e.code, key: e.key, keyCode: e.keyCode });
+    };
+    window.addEventListener("keydown", onWebKey);
+
     // Load persisted settings into engine
     engine.setInputGain(loadSettings().inputGain);
     engine.setOutputGain(loadSettings().outputGain);
@@ -133,6 +146,8 @@ export function usePTTEngine() {
     return () => {
       engine.disconnect();
       engineRef.current = null;
+      window.removeEventListener("androidKeyEvent", onAndroidKey);
+      window.removeEventListener("keydown", onWebKey);
     };
   }, [handleEvent]);
 

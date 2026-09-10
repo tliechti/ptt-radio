@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ptt-radio-client</string>
+    <string name="title_activity_main">ptt-radio-client</string>
+    <string name="package_name">ch.skyangels.ptt</string>
+    <string name="custom_url_scheme">ch.skyangels.ptt</string>
+</resources>
